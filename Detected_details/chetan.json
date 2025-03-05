@@ -1,0 +1,26 @@
+[
+  {
+    "class_name": "laptop",
+    "exact_position": "Center",
+    "rgb_color": [154, 150, 140],
+    "color_name": "RosyBrown"
+  },
+  {
+    "class_name": "person",
+    "exact_position": "Center",
+    "rgb_color": [110, 107, 109],
+    "color_name": "DimGray"
+  },
+  {
+    "class_name": "laptop",
+    "exact_position": "Center",
+    "rgb_color": [170, 169, 165],
+    "color_name": "DarkGray"
+  },
+  {
+    "class_name": "tv",
+    "exact_position": "Center",
+    "rgb_color": [64, 72, 68],
+    "color_name": "DarkSlateGray"
+  }
+]
