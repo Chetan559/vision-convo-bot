@@ -2,7 +2,8 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 import webcolors
-from Color import closest_color_name  # Import the function from Color.py
+from Color import closest_color_name  
+from chat import get_response 
 
 def get_color_name(rgb_color):
     try:
@@ -64,11 +65,14 @@ def object_predictor(image):
         
         rgb_color_list = tuple(int(c) for c in average_color_rgb)
         
+        class_discription = get_response(class_name) 
+        
         detection_details.append({
             "class_name": class_name,
             "exact_position": exact_position,
             "rgb_color": rgb_color_list,
-            "color_name": color_name
+            "color_name": color_name,
+            "class_discription" : class_discription
         })
         
     return detection_details

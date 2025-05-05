@@ -3,6 +3,9 @@ from flask_cors import CORS
 import cv2
 import numpy as np
 from yolov8_basics import object_predictor
+import nltk
+nltk.download('punkt')
+nltk.download('punkt_tab')
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
