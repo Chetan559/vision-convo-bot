@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Scene Narrator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-6 rounded-xl shadow-xl w-full max-w-3xl">
+      <h1 class="text-3xl font-bold text-center mb-6">Visual Scene Narrator</h1>
+
+      <form
+        id="uploadForm"
+        class="flex flex-col md:flex-row items-start md:items-center gap-6 mb-6"
+      >
+        <input
+          type="file"
+          id="imageInput"
+          accept="image/*"
+          class="border p-2 rounded-md w-full md:w-auto"
+          required
+        />
+        <button
+          type="submit"
+          class="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition"
+        >
+          Describe Scene
+        </button>
+      </form>
+
+      <div class="flex flex-col md:flex-row gap-6">
+        <div class="w-full md:w-1/2">
+          <div id="imagePreviewContainer" class="hidden">
+            <p class="font-semibold mb-2">Uploaded Image:</p>
+            <img
+              id="imagePreview"
+              src=""
+              alt="Preview"
+              class="w-full rounded-md border"
+            />
+          </div>
+        </div>
+
+        <div class="w-full md:w-1/2">
+          <div id="loader" class="text-blue-600 mb-2 hidden">
+            Analyzing image...
+          </div>
+          <div
+            id="result"
+            class="p-4 border border-gray-300 rounded-md bg-gray-50 text-gray-800 hidden"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("uploadForm");
+      const imageInput = document.getElementById("imageInput");
+      const imagePreview = document.getElementById("imagePreview");
+      const imagePreviewContainer = document.getElementById(
+        "imagePreviewContainer"
+      );
+      const result = document.getElementById("result");
+      const loader = document.getElementById("loader");
+
+      imageInput.addEventListener("change", () => {
+        const file = imageInput.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imagePreviewContainer.classList.remove("hidden");
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const file = imageInput.files[0];
+        if (!file) return alert("Please select an image.");
+
+        loader.classList.remove("hidden");
+        result.classList.add("hidden");
+        result.innerText = "";
+
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+          const res = await fetch(
+            "https://8014-35-199-162-30.ngrok-free.app/predict",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
+
+          const data = await res.json();
+
+          if (res.ok) {
+            result.innerText =
+              data.text || data.message || JSON.stringify(data);
+            result.classList.remove("hidden");
+          } else {
+            result.innerText = data.error || "Something went wrong.";
+            result.classList.remove("hidden");
+          }
+        } catch (err) {
+          result.innerText = "Failed to connect to the server.";
+          result.classList.remove("hidden");
+        } finally {
+          loader.classList.add("hidden");
+        }
+      });
+    </script>
+  </body>
+</html>
